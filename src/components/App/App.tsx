@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
+import { Toaster, toast } from 'react-hot-toast';
 import ReactPaginateModule from 'react-paginate';
 import type { ReactPaginateProps } from 'react-paginate';
 import type { ComponentType } from 'react';
@@ -21,12 +22,18 @@ export default function App() {
   const [page, setPage] = useState(1);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
-  const { data, isLoading, isError, isFetching } = useQuery({
+  const { data, isLoading, isError, isFetching, isSuccess } = useQuery({
     queryKey: ['movies', query, page],
     queryFn: () => fetchMovies(query, page),
     enabled: query.trim().length > 0,
     placeholderData: keepPreviousData,
   });
+
+  useEffect(() => {
+    if (isSuccess && data.results.length === 0) {
+      toast('No movies found for your request.');
+    }
+  }, [isSuccess, data]);
 
   const handleSearchSubmit = (newQuery: string) => {
     setQuery(newQuery);
@@ -37,14 +44,12 @@ export default function App() {
 
   return (
     <div className={css.container}>
+      <Toaster position="top-center" />
       <h1 className={css.heading}>Movie Search</h1>
       <SearchBar onSubmit={handleSearchSubmit} />
 
       {isLoading && <Loader />}
       {isError && <ErrorMessage />}
-      {!isLoading && !isError && data?.results.length === 0 && (
-        <p className={css.status}>No movies found for your request.</p>
-      )}
 
       {data && <MovieGrid movies={data.results} onSelect={setSelectedMovie} />}
 

@@ -8,7 +8,7 @@ import MovieGrid from '../MovieGrid/MovieGrid';
 import Loader from '../Loader/Loader';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import MovieModal from '../MovieModal/MovieModal';
-import { fetchMovies } from '../../services/api';
+import { fetchMovies } from '../../services/movieService';
 import type { Movie } from '../../types/movie';
 import css from './App.module.css';
 

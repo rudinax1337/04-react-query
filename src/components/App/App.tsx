@@ -5,7 +5,11 @@ import type { ReactPaginateProps } from 'react-paginate';
 import type { ComponentType } from 'react';
 import SearchBar from '../SearchBar/SearchBar';
 import MovieGrid from '../MovieGrid/MovieGrid';
+import Loader from '../Loader/Loader';
+import ErrorMessage from '../ErrorMessage/ErrorMessage';
+import MovieModal from '../MovieModal/MovieModal';
 import { fetchMovies } from '../../services/api';
+import type { Movie } from '../../types/movie';
 import css from './App.module.css';
 
 type ModuleWithDefault<T> = { default: T };
@@ -15,6 +19,7 @@ const ReactPaginate = (ReactPaginateModule as unknown as ModuleWithDefault<Compo
 export default function App() {
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
   const { data, isLoading, isError, isFetching } = useQuery({
     queryKey: ['movies', query, page],
@@ -35,17 +40,13 @@ export default function App() {
       <h1 className={css.heading}>Movie Search</h1>
       <SearchBar onSubmit={handleSearchSubmit} />
 
-      {isLoading && <p className={css.status}>Loading...</p>}
-      {isError && (
-        <p className={css.status}>
-          Something went wrong while fetching movies.
-        </p>
-      )}
+      {isLoading && <Loader />}
+      {isError && <ErrorMessage />}
       {!isLoading && !isError && data?.results.length === 0 && (
         <p className={css.status}>No movies found for your request.</p>
       )}
 
-      {data && <MovieGrid movies={data.results} />}
+      {data && <MovieGrid movies={data.results} onSelect={setSelectedMovie} />}
 
       {totalPages > 1 && (
         <ReactPaginate
@@ -63,6 +64,10 @@ export default function App() {
 
       {isFetching && !isLoading && (
         <p className={css.status}>Updating results...</p>
+      )}
+
+      {selectedMovie && (
+        <MovieModal movie={selectedMovie} onClose={() => setSelectedMovie(null)} />
       )}
     </div>
   );

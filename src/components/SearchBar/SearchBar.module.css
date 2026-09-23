@@ -1,0 +1,35 @@
+.form {
+    display: flex;
+    gap: 8px;
+    max-width: 480px;
+    margin: 0 auto 32px;
+}
+
+.input {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 4px;
+    border: 1px solid #33333c;
+    background-color: #1a1a20;
+    color: #f2f1ec;
+    font-size: 15px;
+}
+
+.input:focus-visible {
+    outline: 2px solid #e0b13c;
+    outline-offset: 1px;
+}
+
+.button {
+    padding: 10px 20px;
+    border-radius: 4px;
+    border: none;
+    background-color: #e0b13c;
+    color: #101014;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #eec158;
+}
